@@ -153,6 +153,15 @@ public:
     mDistribution = decltype(mDistribution)(weights.begin(), weights.end());
   }
 
+  void seed(T const &value = std::mt19937::default_seed) {
+    mEngine.seed(value);
+  }
+
+  template <class Sseq>
+  void seed(Sseq &seq) {
+    mEngine.seed(seq);
+  }
+
 private:
   std::vector<value_type> mRanges {};
   std::mt19937 mutable mEngine {};

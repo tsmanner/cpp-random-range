@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <map>
 #include <set>
 
@@ -73,4 +74,19 @@ TEST_CASE("Distribution") {
   // Modify the range, and check the distribution again.
   range.selectWithoutReplacement();
   checkDistribution(range, drawsPerValue, 0.1);
+}
+
+TEST_CASE("Seeding") {
+  static constexpr unsigned sequenceLength = 1000;
+  random_range<int> range{1, 100};
+  range.seed(0);
+  std::vector<int> first_pass(sequenceLength);
+  std::generate(first_pass.begin(), first_pass.end(), [&] () { return range.selectWithReplacement(); });
+  range.seed(0);
+  std::vector<int> second_pass(sequenceLength);
+  std::generate(second_pass.begin(), second_pass.end(), [&] () { return range.selectWithReplacement(); });
+  // Check the results are the same sequence
+  for (std::size_t i = 0; i < sequenceLength; ++i) {
+    CHECK(first_pass[i] == second_pass[i]);
+  }
 }
